@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# Function to print Tux ASCII art
+print_tux() {
+    cat << "EOF"
+          .--.
+         |o_o |
+         |:_/ |
+        //   \ \
+       (|     | )
+      /'\_   _/`\
+      \___)=(___/
+EOF
+}
+
+# Function to print system information
+print_system_info() {
+    print_tux
+    echo "OS: $(uname -o)"
+    echo "Kernel: $(uname -r)"
+    echo "Architecture: $(uname -m)"
+    echo "Shell: $SHELL"
+}
+
+# Function to print CPU information
+print_cpu_info() {
+    echo "CPU: $(grep 'model name' /proc/cpuinfo | head -n 1 | cut -d':' -f2 | sed 's/^ *//')"
+    echo "CPU Cores: $(grep 'cpu cores' /proc/cpuinfo | head -n 1 | cut -d':' -f2 | sed 's/^ *//')"
+}
+
+# Function to print memory information
+print_memory_info() {
+    echo "Memory: $(free -h | awk '/^Mem/ {print $2}')"
+}
+
+# Function to print GPU information
+print_gpu_info() {
+    if command -v lspci &>/dev/null; then
+        echo "GPU: $(lspci | grep -i 'VGA\|3D\|2D' | head -n 1 | cut -d':' -f3- | sed 's/^ *//')"
+    else
+        echo "GPU: Not available (lspci not found)"
+    fi
+}
+
+# Function to print disk information
+print_disk_info() {
+    echo "Disk: $(df -h / | awk 'NR==2 {print $2}')"
+}
+
+# Function to print uptime
+print_uptime() {
+    echo "Uptime: $(uptime -p)"
+}
+
+# Main function to call other functions and print system info
+main() {
+    echo "--------------------"
+    echo "System Information"
+    echo "--------------------"
+    print_system_info
+    echo "--------------------"
+    echo "CPU Information"
+    echo "--------------------"
+    print_cpu_info
+    echo "--------------------"
+    echo "Memory Information"
+    echo "--------------------"
+    print_memory_info
+    echo "--------------------"
+    echo "GPU Information"
+    echo "--------------------"
+    print_gpu_info
+    echo "--------------------"
+    echo "Disk Information"
+    echo "--------------------"
+    print_disk_info
+    echo "--------------------"
+    echo "System Uptime"
+    echo "--------------------"
+    print_uptime
+    echo "--------------------"
+}
+
+# Call the main function
+main
